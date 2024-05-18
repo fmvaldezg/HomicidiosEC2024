@@ -16,6 +16,8 @@ Datos publicados en <a>https://www.datosabiertos.gob.ec/dataset/homicidios-inten
 <ol>
   <li>Se creará un mapa con las tasas de homicidio a nivel de parroquia, cantón y provincia.</li>
   <li>Mapa de puntos y clusters mostrando otros atributos</li>
+  <li>Mapas con datos del 2020</li>
+  <li>Mapa comparativo slide</li>
 </ol>
 
 **Creado por**
