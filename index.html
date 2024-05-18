@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Create a heatmap layer</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+#legend {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: white;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+    z-index: 1;
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    max-width: 300px; /* Added to limit the maximum width */
+}
+.map-title {
+    font-weight: bold;
+    font-size:large;
+    margin-bottom: 5px;
+}
+.legend-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.legend-item {
+    margin-bottom: 5px;
+}
+.legend-item-small {
+    font-size: smaller;
+}
+.legend-item-par {
+    font-size: small;
+    text-align: left;
+    word-wrap: break-word; /* Ensure long words break to avoid overflow */
+}
+.legend-item-par2 {
+    font-size: 10px;
+}
+.legend-color-gradient {
+    width: 100px;
+    height: 20px;
+    background: linear-gradient(to right, rgba(33,102,172,0), rgb(103,169,207), rgb(209,229,240), rgb(253,219,199), rgb(239,138,98), rgb(178,24,43));
+    border: 1px solid #000;
+}
+.legend-color {
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    border: 1px solid #000;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+}
+.legend-text {
+    display: flex;
+    justify-content: space-between;
+    width: 100px;
+}
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div id="legend">
+    <div class="map-title">Homicidios en Ecuador</div>
+    <div class="legend-item legend-item-par">
+        Mapa de homicidios intencionales por tipo de arma.
+    </div>
+    <div class="legend-item legend-item-par">
+        Enero-Marzo 2024.
+    </div>
+    <div class="legend-title">Intensidad</div>
+    <div class="legend-item">
+        <div class="legend-color-gradient"></div>
+    </div>
+    <div class="legend-item-small legend-text">
+        <span>Baja</span>
+        <span>Alta</span>
+    </div>
+    <div class="legend-title">Tipo de Arma</div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #377eb8;"></div>
+        <span class="legend-item-small">Arma blanca</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #4daf4a;"></div>
+        <span class="legend-item-small">Arma Contundente</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #e41a1c;"></div>
+        <span class="legend-item-small">Arma de fuego</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #ff7f00;"></div>
+        <span class="legend-item-small">Constrictora</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #984ea3;"></div>
+        <span class="legend-item-small">Otros</span>
+    </div>
+    <div class="legend-title">Instrucciones</div>
+    <div class="legend-item legend-item-par">
+        Utiliza los controles de zoom para visualizar la localización de cada incidente.
+    </div>
+    <span></span>
+    <div class="legend-item-par2">
+        Fuente: Ministerio del Interior - 24 de Abril de 2024.
+    </div>
+</div>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZm12YWxkZXpnODQiLCJhIjoiY2w5eWJzMzkwMDNiaDNvbGltamV1ajdvNiJ9.esyugI1HyBVPAQcRN551xw';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+        style: 'mapbox://styles/mapbox/dark-v11',
+        center: [-78.72980, -1.79096],
+        zoom: 6.62
+    });
+
+    map.on('load', () => {
+        // Add a geojson point source.
+        // Heatmap layers also work with a vector tile source.
+        map.addSource('homicidios2024', {
+            'type': 'geojson',
+            'data': 'https://raw.githubusercontent.com/fmvaldezg/HomicidiosEC2024/main/data/hom_ec_2024.geojson'
+        });
+
+        map.addLayer(
+            {
+                'id': 'homicidios-heat',
+                'type': 'heatmap',
+                'source': 'homicidios2024',
+                'maxzoom': 9,
+                'paint': {
+                    'heatmap-weight': 0.3,
+                    'heatmap-intensity': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        0,
+                        1,
+                        9,
+                        3
+                    ],
+                    'heatmap-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['heatmap-density'],
+                        0,
+                        'rgba(33,102,172,0)',
+                        0.2,
+                        'rgb(103,169,207)',
+                        0.4,
+                        'rgb(209,229,240)',
+                        0.6,
+                        'rgb(253,219,199)',
+                        0.8,
+                        'rgb(239,138,98)',
+                        1,
+                        'rgb(178,24,43)'
+                    ],
+                    'heatmap-radius': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        0,
+                        2,
+                        9,
+                        20
+                    ],
+                    'heatmap-opacity': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        7,
+                        1,
+                        9,
+                        0
+                    ]
+                }
+            },
+            'waterway-label'
+        );
+
+        map.addLayer(
+            {
+                'id': 'homicidios-point',
+                'type': 'circle',
+                'source': 'homicidios2024',
+                'minzoom': 7.5,
+                'paint': {
+                    'circle-radius': {
+                        'base': 2,
+                        'stops': [
+                            [12, 3],
+                            [15, 15],
+                            [19, 30]
+                        ]
+                    },
+                    'circle-color': [
+                        'match',
+                        ['get', 'Arma'],
+                        'ARMA BLANCA',
+                        '#377eb8',
+                        'ARMA CONTUNDENTE',
+                        '#4daf4a',
+                        'ARMA DE FUEGO',
+                        '#e41a1c',
+                        'CONSTRICTORA',
+                        '#ff7f00',
+                        'OTROS',
+                        '#984ea3',
+                        '#000'
+                    ],
+                    'circle-stroke-color': 'white',
+                    'circle-stroke-width': 0.1,
+                    'circle-opacity': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        7,
+                        0,
+                        8,
+                        1
+                    ],
+                    'circle-opacity': 0.6,
+                }
+            },
+            'waterway-label'
+        );
+    });
+
+    // Ensure the map control is added correctly
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.setMinZoom(6.5);
+</script>
+
+</body>
+</html>
