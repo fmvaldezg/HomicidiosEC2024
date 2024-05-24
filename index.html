@@ -9,40 +9,44 @@
 <style>
 body { margin: 0; padding: 0; }
 #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
 #legend {
     position: absolute;
     top: 10px;
-    left: 10px;
+    left: 5px;
     background: white;
     padding: 10px;
     font-family: Arial, sans-serif;
+    font-size: 15px; /* Base font size for the legend */
     z-index: 1;
     border-radius: 3px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
     max-width: 300px; /* Added to limit the maximum width */
 }
 .map-title {
     font-weight: bold;
-    font-size:large;
+    font-size: 16px; /* Harmonized font size for the title */
     margin-bottom: 5px;
 }
 .legend-title {
     font-weight: bold;
+    font-size: 14px; /* Harmonized font size for the legend titles */
     margin-bottom: 5px;
 }
 .legend-item {
     margin-bottom: 5px;
 }
 .legend-item-small {
-    font-size: smaller;
+    font-size: 12px; /* Harmonized smaller font size */
 }
 .legend-item-par {
-    font-size: small;
+    font-size: 14px; /* Harmonized paragraph font size */
     text-align: left;
     word-wrap: break-word; /* Ensure long words break to avoid overflow */
 }
 .legend-item-par2 {
-    font-size: 10px;
+    font-size: 12px; /* Harmonized smaller font size for secondary text */
 }
 .legend-color-gradient {
     width: 100px;
@@ -64,57 +68,127 @@ body { margin: 0; padding: 0; }
     justify-content: space-between;
     width: 100px;
 }
+
+.rounded-rect {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 50px -25px black;
+}
+
+.flex-center {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-center.left {
+    left: 0px;
+}
+
+.flex-center.right {
+    right: 0px;
+}
+
+.sidebar-content {
+    position: absolute;
+    width: 95%;
+    height: 95%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 32px;
+    color: gray;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    width: 1.3em;
+    height: 1.3em;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-toggle.left {
+    right: -1.5em;
+}
+
+.sidebar-toggle:hover {
+    color: #0aa1cf;
+    cursor: pointer;
+}
+
+.sidebar {
+    transition: transform 1s;
+    z-index: 1;
+    width: 310px;
+    height: 100%;
+}
+
+.left.collapsed {
+    transform: translateX(-295px);
+}
+
 </style>
 </head>
 <body>
-<div id="map"></div>
+<div id="map">
 
-<div id="legend">
-    <div class="map-title">Homicidios en Ecuador</div>
-    <div class="legend-item legend-item-par">
-        Mapa de homicidios intencionales por tipo de arma.
-    </div>
-    <div class="legend-item legend-item-par">
-        Enero-Marzo 2024.
-    </div>
-    <div class="legend-title">Intensidad</div>
-    <div class="legend-item">
-        <div class="legend-color-gradient"></div>
-    </div>
-    <div class="legend-item-small legend-text">
-        <span>Baja</span>
-        <span>Alta</span>
-    </div>
-    <div class="legend-title">Tipo de Arma</div>
-    <div class="legend-item">
-        <div class="legend-color" style="background: #377eb8;"></div>
-        <span class="legend-item-small">Arma blanca</span>
-    </div>
-    <div class="legend-item">
-        <div class="legend-color" style="background: #4daf4a;"></div>
-        <span class="legend-item-small">Arma Contundente</span>
-    </div>
-    <div class="legend-item">
-        <div class="legend-color" style="background: #e41a1c;"></div>
-        <span class="legend-item-small">Arma de fuego</span>
-    </div>
-    <div class="legend-item">
-        <div class="legend-color" style="background: #ff7f00;"></div>
-        <span class="legend-item-small">Constrictora</span>
-    </div>
-    <div class="legend-item">
-        <div class="legend-color" style="background: #984ea3;"></div>
-        <span class="legend-item-small">Otros</span>
-    </div>
-    <div class="legend-title">Instrucciones</div>
-    <div class="legend-item legend-item-par">
-        Utiliza los controles de zoom para visualizar la localización de cada incidente.
-    </div>
-    <span></span>
-    <div class="legend-item-par2">
-        Fuente: Ministerio del Interior - 24 de Abril de 2024.
+<div id="left" class="sidebar flex-center left collapsed">
+    <div class="sidebar-content rounded-rect flex-center">
+        <div id="legend">
+            <div class="map-title">Homicidios en Ecuador</div>
+            <div class="legend-item legend-item-par">
+                Mapa de homicidios intencionales por tipo de arma.
+            </div>
+            <div class="legend-item legend-item-par">
+                Enero-Marzo 2024.
+            </div>
+            <div class="legend-title">Intensidad</div>
+            <div class="legend-item">
+                <div class="legend-color-gradient"></div>
+            </div>
+            <div class="legend-item-small legend-text">
+                <span>Baja</span>
+                <span>Alta</span>
+            </div>
+            <div class="legend-title">Tipo de Arma</div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #377eb8;"></div>
+                <span class="legend-item-small">Arma blanca</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4daf4a;"></div>
+                <span class="legend-item-small">Arma Contundente</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e41a1c;"></div>
+                <span class="legend-item-small">Arma de fuego</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff7f00;"></div>
+                <span class="legend-item-small">Constrictora</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #984ea3;"></div>
+                <span class="legend-item-small">Otros</span>
+            </div>
+            <div class="legend-title">Instrucciones</div>
+            <div class="legend-item legend-item-par">
+                Utiliza los controles de zoom para visualizar la localización de cada incidente.
+            </div>
+            <span></span>
+            <div class="legend-item-par2">
+                Fuente: Ministerio del Interior - 24 de Abril de 2024.
+            </div>
+        </div>
+        <div class="sidebar-toggle rounded-rect left" onclick="toggleSidebar('left')">
+            &rarr;
+        </div>
     </div>
 </div>
+</div>
+
 
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZm12YWxkZXpnODQiLCJhIjoiY2w5eWJzMzkwMDNiaDNvbGltamV1ajdvNiJ9.esyugI1HyBVPAQcRN551xw';
@@ -242,6 +316,25 @@ body { margin: 0; padding: 0; }
     // Ensure the map control is added correctly
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
     map.setMinZoom(6.5);
+
+    function toggleSidebar(id) {
+        const elem = document.getElementById(id);
+        // Add or remove the 'collapsed' CSS class from the sidebar element.
+        // Returns boolean "true" or "false" whether 'collapsed' is in the class list.
+        const collapsed = elem.classList.toggle('collapsed');
+        const padding = {};
+        // 'id' is 'right' or 'left'. When run at start, this object looks like: '{left: 300}';
+        padding[id] = collapsed ? 0 : 300; // 0 if collapsed, 300 px if not. This matches the width of the sidebars in the .sidebar CSS class.
+        // Use `map.easeTo()` with a padding option to adjust the map's center accounting for the position of sidebars.
+        map.easeTo({
+            padding: padding,
+            duration: 1000 // In ms. This matches the CSS transition duration property.
+        });
+    }
+
+    map.on('load', () => {
+        toggleSidebar('left');
+    });
 </script>
 
 </body>
